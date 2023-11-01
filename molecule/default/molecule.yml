@@ -1,0 +1,51 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: molecule/requirements.yml
+driver:
+  name: docker
+platforms:
+  - name: molecule-k0s-default-controller
+    groups: ['k8s_control_plane']
+    image: docker.io/fbn587/molecule-ubuntu:jammy
+    pull: true
+    pre_build_image: true
+    override_command: false
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup/molecule.scope:/sys/fs/cgroup:rw
+      - ${TEMP_DIR:-/tmp}/molecule/k0s/controller:/var/lib/k0s
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+      - /var/lib/journal
+    cgroupns_mode: host
+  - name: molecule-k0s-default-worker
+    groups: ['k8s_workers']
+    image: docker.io/fbn587/molecule-ubuntu:jammy
+    pull: true
+    pre_build_image: true
+    override_command: false
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup/molecule.scope:/sys/fs/cgroup:rw
+      - ${TEMP_DIR:-/tmp}/molecule/k0s/worker:/var/lib/k0s
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+      - /var/lib/journal
+    cgroupns_mode: host
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks, timer, yaml
+  inventory:
+    links:
+      group_vars: inventory/group_vars/
+      #host_vars: inventory/host_vars/
+verifier:
+  name: ansible

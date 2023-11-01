@@ -1,0 +1,16 @@
+---
+- name: Check if k0s binary is already installed
+  ansible.builtin.stat:
+    path: "{{ k0s_install_dir }}/k0s"
+  register: _k0s_bin
+
+- name: Install k0s binary
+  ansible.builtin.get_url:
+    url: "{{ k0s_bin_url }}"
+    dest: "{{ k0s_install_dir }}/k0s"
+    checksum: "sha256:{{ k0s_bin_checksum_url }}"
+    force: true
+    owner: root
+    group: root
+    mode: '0755'
+  when: not _k0s_bin.stat.exists or k0s_bin_update

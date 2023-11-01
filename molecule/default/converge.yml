@@ -1,0 +1,35 @@
+---
+- name: Deploy initial Kubernetes control plane node
+  hosts: k8s_control_plane[0]
+  tasks:
+    - name: Install k0s on first control plane node
+      ansible.builtin.import_role:
+        name: k0s
+
+    - name: Wait for Kubernetes API Server to be ready
+      ansible.builtin.wait_for:
+        host: 0.0.0.0
+        port: 6443
+        sleep: 1
+        delay: 5
+
+    - name: Generate join token for workers nodes
+      ansible.builtin.command:
+        cmd: "/usr/local/bin/k0s token create --role=worker --expiry=1h"
+      register: _k0s_join_token_worker_raw
+      changed_when: false
+
+    - name: Store join tokens for cluster bootstrap
+      ansible.builtin.add_host:
+        name: k0s_bootstrap
+        join_token_worker: "{{ _k0s_join_token_worker_raw.stdout }}"
+      changed_when: false
+
+- name: Deploy Kubernetes worker nodes
+  hosts: k8s_workers
+  tasks:
+    - name: Install k0s on worker nodes
+      ansible.builtin.import_role:
+        name: k0s
+      vars:
+        k0s_join_token: "{{ hostvars.k0s_bootstrap.join_token_worker }}"

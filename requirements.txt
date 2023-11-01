@@ -1,0 +1,7 @@
+# GitHub Actions dependencies
+ansible==8.5.0
+ansible-lint==6.20.3
+yamllint==1.32.0
+molecule==6.0.2
+molecule-plugins==23.5.0
+docker==6.1.3

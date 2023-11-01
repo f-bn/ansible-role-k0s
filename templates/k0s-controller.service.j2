@@ -1,0 +1,33 @@
+# Managed by Ansible
+
+[Unit]
+Description=Zero Friction Kubernetes (controller)
+Documentation=https://docs.k0sproject.io
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart={{ k0s_install_dir }}/k0s controller \
+  --data-dir {{ k0s_data_dir }} \
+{% if k0s_join_token|length %}
+  --token-file {{ k0s_join_token_path }} \
+{% endif %}
+{% if k0s_controller_components_disabled|length %}
+  --disable-components {{ k0s_controller_components_disabled | join(',') }} \
+{% endif %}
+{% if k0s_controller_metrics_enabled %}
+  --enable-metrics-scraper \
+{% endif %}
+  --config {{ k0s_controller_config_path }}
+Restart=on-failure
+RestartSec=120
+StartLimitInterval=5
+StartLimitBurst=10
+TimeoutStartSec=0
+KillMode=process
+Delegate=yes
+LimitCORE=infinity
+TasksMax=infinity
+
+[Install]
+WantedBy=multi-user.target

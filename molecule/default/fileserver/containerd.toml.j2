@@ -1,0 +1,39 @@
+# Managed by Ansible
+
+version = 2
+root = "{{ k0s_data_dir }}/containerd"
+state = "/run/k0s/containerd"
+
+[grpc]
+  address = "/run/k0s/containerd/containerd.sock"
+
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+    cdi_spec_dirs = ["/etc/cdi", "/var/run/cdi"]
+    enable_unprivileged_icmp = false
+    enable_unprivileged_ports = false
+    enable_selinux = false
+    ignore_image_defined_volumes = false
+    image_pull_progress_timeout = "1m0s"
+    max_concurrent_downloads = 3
+    max_container_log_line_size = 16384
+    sandbox_image = "registry.k8s.io/pause:3.8"
+    stats_collect_period = 10
+    stream_idle_timeout = "4h0m0s"
+    stream_server_address = "127.0.0.1"
+    stream_server_port = "0"
+
+    [plugins."io.containerd.grpc.v1.cri".cni]
+      bin_dir = "/opt/cni/bin"
+      conf_dir = "/etc/cni/net.d"
+
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      default_runtime_name = "runc"
+      snapshotter = "overlayfs"
+
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          runtime_type = "io.containerd.runc.v2"
+          sandbox_mode = "podsandbox"
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = true

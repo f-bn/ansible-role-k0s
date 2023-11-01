@@ -1,0 +1,31 @@
+---
+# Managed by Ansible
+apiVersion: k0s.k0sproject.io/v1beta1
+kind: ClusterConfig
+metadata:
+  name: k0s
+spec:
+  api:
+    address: {{ ansible_default_ipv4.address }}
+    port: 6443
+    k0sApiPort: 9443
+  network:
+    provider: {{ k0s_network_provider }}
+    podCIDR: {{ k0s_network_pod_cidr }}
+    serviceCIDR: {{ k0s_network_service_cidr }}
+    clusterDomain: {{ k0s_network_cluster_domain | default('cluster.local') }}
+    kubeProxy:
+      mode: iptables
+  storage:
+    type: etcd
+    etcd:
+      peerAddress: {{ ansible_default_ipv4.address }}
+  workerProfiles:
+    - name: default
+      values:
+        cgroupDriver: systemd
+        maxPods: 110
+        podPidsLimit: 4096
+        seccompDefault: true
+  telemetry:
+    enabled: false

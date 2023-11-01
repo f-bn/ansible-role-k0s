@@ -1,0 +1,55 @@
+---
+name: Ansible tests
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
+      - '**/LICENSE'
+  pull_request:
+defaults:
+  run:
+    working-directory: k0s
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v4
+        with:
+          path: k0s
+      - name: Install Python
+        uses: actions/setup-python@v4
+      - name: Install required Python packages
+        run: |
+          pip3 install -r requirements.txt
+      - name: Run YAML linter
+        run: |
+          yamllint .
+      - name: Run Ansible linter
+        run: |
+          ansible-lint -v .
+  test:
+    needs: lint
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python_version: ['3.10','3.11']
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v4
+        with:
+          path: k0s
+      - name: Install Python ${{ matrix.python_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python_version }}
+      - name: Install required Python packages
+        run: |
+          pip3 install -r requirements.txt
+      - name: Run Molecule tests
+        run: |
+          molecule test --all
+        env:
+          TEMP_DIR: ${{ runner.temp }}

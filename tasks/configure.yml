@@ -1,0 +1,48 @@
+---
+- name: Ensure k0s configuration directory exists
+  ansible.builtin.file:
+    path: "{{ k0s_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  with_items:
+    - { path: "{{ k0s_config_dir }}", owner: root, group: root, mode: '0755' }
+    - { path: "{{ k0s_data_dir }}", owner: root, group: root, mode: '0755' }
+  
+- name: Ensure custom k0s configuration is applied
+  ansible.builtin.template:
+    src: "{{ k0s_controller_config_template }}"
+    dest: "{{ k0s_controller_config_path }}"
+    owner: root
+    group: root
+    mode: '0640'
+  when:
+    - k0s_role == 'controller'
+
+- name: Ensure custom containerd configuration is applied
+  ansible.builtin.template:
+    src: "{{ k0s_worker_containerd_config_template }}"
+    dest: "{{ k0s_config_dir }}/containerd.toml"
+    owner: root
+    group: root
+    mode: '0640'
+  when:
+    - k0s_role == 'worker'
+    - k0s_worker_containerd_config_template|length
+
+- name: Check if k0s join token is already configured
+  ansible.builtin.stat:
+    path: "{{ k0s_join_token_path }}"
+  register: _join_token_file
+
+- name: Ensure k0s join token file is present
+  ansible.builtin.copy:
+    dest: "{{ k0s_join_token_path }}"
+    content: "{{ k0s_join_token }}"
+    owner: root
+    group: root
+    mode: '0400'
+  when:
+    - k0s_join_token|length
+    - not _join_token_file.stat.exists

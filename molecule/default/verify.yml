@@ -1,0 +1,43 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Retrive system services status
+      ansible.builtin.service_facts:
+
+    - name: Check if k0s service is enabled and running
+      ansible.builtin.assert:
+        that:
+          - services["k0s-{{ k0s_role }}.service"]["state"] == "running"
+          - services["k0s-{{ k0s_role }}.service"]["status"] == "enabled"
+
+- name: API health checks
+  hosts: k8s_control_plane[0]
+  gather_facts: false
+  tasks:
+    - name: Ensure Kubernetes API proxy service unit is applied
+      ansible.builtin.copy:
+        src: fileserver/k8s-api-proxy.service
+        dest: /etc/systemd/system/k8s-api-proxy.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Start Kubernetes API proxy service for API tests
+      ansible.builtin.systemd:
+        name: k8s-api-proxy.service
+        state: started
+        daemon_reload: true
+
+    - name: Check if API livez endpoint is responding to requests
+      ansible.builtin.uri:
+        url: http://localhost:16443/livez?verbose
+        method: GET
+        return_content: true
+
+    - name: Check if node API endpoint is responding to requests
+      ansible.builtin.uri:
+        url: http://127.0.0.1:16443/api/v1/nodes
+        method: GET
+        return_content: true

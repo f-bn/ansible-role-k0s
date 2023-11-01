@@ -1,0 +1,36 @@
+---
+# Defaults variables for 'k0s' role
+
+# -----------------------------------------------------------------------------
+# GENERAL
+# -----------------------------------------------------------------------------
+k0s_version: '1.28.2+k0s.0'
+k0s_role: controller
+
+# - Locations -
+k0s_install_dir: /usr/local/bin
+k0s_data_dir: /var/lib/k0s
+k0s_config_dir: /etc/k0s
+
+# - Install -
+k0s_bin_url: "https://github.com/k0sproject/k0s/releases/download/v{{ k0s_version }}/k0s-v{{ k0s_version }}-amd64"
+k0s_bin_checksum_url: "https://github.com/k0sproject/k0s/releases/download/v{{ k0s_version }}/sha256sums.txt"
+k0s_bin_update: false
+
+# -----------------------------------------------------------------------------
+# CONFIGURATIONS
+# -----------------------------------------------------------------------------
+k0s_join_token_path: "{{ k0s_config_dir }}/token"
+k0s_join_token: ''
+
+# - Controllers configuration -
+k0s_controller_config_template: k0s.default.yaml.j2
+k0s_controller_config_path: "{{ k0s_config_dir }}/k0s.yaml"
+k0s_controller_components_disabled: []
+#  - helm
+#  - metrics-server
+k0s_controller_metrics_enabled: false
+
+# - Workers configuration -
+k0s_worker_containerd_config_template: ''
+k0s_worker_profile: ''

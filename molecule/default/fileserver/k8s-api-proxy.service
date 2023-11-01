@@ -1,0 +1,13 @@
+# Managed by Ansible
+
+[Unit]
+Description=Kubernetes API proxy for Molecule tests
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/k0s kubectl proxy --port 16443
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

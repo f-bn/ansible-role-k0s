@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: k0s
+  namespace: fbn587
+  description: Ansible role to install and configure k0s Kubernetes distribution
+  author: f-bn
+  license: MIT
+  min_ansible_version: '8.0.0'
+  issue_tracker_url: https://github.com/f-bn/ansible-role-k0s/issues
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 'jammy'
+  galaxy_tags: []
+dependencies: []

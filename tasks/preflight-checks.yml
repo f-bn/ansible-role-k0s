@@ -1,0 +1,6 @@
+---
+- name: Check if join token variable is not empty for worker node
+  ansible.builtin.assert:
+    that: k0s_join_token|length
+    msg: "'k0s_join_token' variable must not be empty on worker nodes"
+  when: k0s_role == 'worker'

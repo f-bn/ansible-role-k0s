@@ -1,0 +1,27 @@
+# Managed by Ansible
+
+[Unit]
+Description=Zero Friction Kubernetes (worker)
+Documentation=https://docs.k0sproject.io
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart={{ k0s_install_dir }}/k0s worker \
+  --data-dir {{ k0s_data_dir }} \
+{% if k0s_worker_profile|length %}
+  --profile {{ k0s_worker_profile }} \
+{% endif %}
+  --token-file {{ k0s_join_token_path }}
+StartLimitInterval=5
+StartLimitBurst=10
+TimeoutStartSec=0
+Restart=on-failure
+RestartSec=120
+KillMode=process
+Delegate=yes
+LimitCORE=infinity
+TasksMax=infinity
+
+[Install]
+WantedBy=multi-user.target

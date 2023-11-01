@@ -1,0 +1,12 @@
+---
+- name: Pre-flight checks
+  ansible.builtin.import_tasks: preflight-checks.yml
+
+- name: Install k0s
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure k0s
+  ansible.builtin.import_tasks: configure.yml
+
+- name: Manage k0s service
+  ansible.builtin.import_tasks: service.yml
