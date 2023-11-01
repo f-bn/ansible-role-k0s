@@ -9,6 +9,9 @@ k0s_role: controller
 # -----------------------------------------------------------------------------
 k0s_controller_config_template: fileserver/k0s.yaml.j2
 
+k0s_controller_components_disabled:
+  - helm
+
 # - Test variables -
 k0s_network_provider: calico
 k0s_network_pod_cidr: 10.244.0.0/16
