@@ -4,7 +4,7 @@
 
 Ansible role to install and configure k0s Kubernetes distribution.
 
-**Note**: this role only installs the k0s binary, push configurations and start the service on target hosts. You need to create a playbook to orchestrate a complete cluster bootstrap (see [examples](examples/bootstrap-cluster.yml))
+**Note**: this role only installs the k0s binary, push configurations and start the service on target hosts. You need to create a playbook to orchestrate a complete cluster bootstrap (see [examples](examples/bootstrap-cluster.yml) folder)
 
 **Table of Contents**
 
@@ -30,6 +30,11 @@ This role only supports Ubuntu Server LTS platforms:
 **References**
 
   - k0s : https://k0sproject.io/
+
+**Implementation notes**
+
+  - **Binary installation**: this roles installs k0s using the official binary, no other methods will be supported.
+  - **Limited configuration by default**: this role embeds a basic configuration template with a limited set of feature for sake of simplicity. The role is designed to allow you to bring your own configuration templates (using the `k0s_controller_config_template` variable) instead of providing a generic template and falling in a template maintainability nightmare.
 
 ### Role variables
 
@@ -70,7 +75,7 @@ The following variables are only valid for **worker** nodes:
 ### Examples
 
 ```YAML
-# Pushing custom k0s configuration from Ansible controller (controller)
+# You can push a custom k0s configuration file/template from Ansible controller (controller)
 k0s_controller_config_template: "/path/to/k0s.yaml.j2"
 
 # Disable k0s components (controller)
@@ -78,7 +83,7 @@ k0s_controller_components_disabled:
   - helm
   - autopilot
 
-# Pushing custom containerd configuration file/template from Ansible controller (worker)
+# You can push a custom containerd configuration file/template from your Ansible controller (worker)
 k0s_worker_containerd_config_template: '/path/to/containerd.toml'
 
 # Custom kubelet worker profile
