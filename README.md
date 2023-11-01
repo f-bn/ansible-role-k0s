@@ -4,8 +4,6 @@
 
 Ansible role to install and configure k0s Kubernetes distribution.
 
-**Note**: this role only installs the k0s binary, push configurations and start the service on target hosts. You need to create a playbook to orchestrate a complete cluster bootstrap (see [examples](examples/bootstrap-cluster.yml) folder)
-
 **Table of Contents**
 
 - [General informations](#general-informations)
@@ -35,6 +33,7 @@ This role only supports Ubuntu Server LTS platforms:
 
   - **Binary installation**: this roles installs k0s using the official binary, no other methods will be supported.
   - **Limited configuration by default**: this role embeds a basic configuration template with a limited set of feature for sake of simplicity. The role is designed to allow you to bring your own configuration templates (using the `k0s_controller_config_template` variable) instead of providing a generic template and falling in a template maintainability nightmare.
+  - **Cluster deployments**: this role only installs the k0s binary, push various configurations and start the service on target hosts. You need to create a playbook to orchestrate a complete cluster bootstrap (see [examples](examples/bootstrap-cluster.yml) folder)
 
 ### Role variables
 
