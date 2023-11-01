@@ -35,9 +35,17 @@
         url: http://localhost:16443/livez?verbose
         method: GET
         return_content: true
+      register: _result
+      until: _result.status == 200
+      retries: 10
+      delay: 3
 
     - name: Check if node API endpoint is responding to requests
       ansible.builtin.uri:
         url: http://127.0.0.1:16443/api/v1/nodes
         method: GET
         return_content: true
+      register: _result
+      until: _result.status == 200
+      retries: 10
+      delay: 3
