@@ -41,7 +41,7 @@ This role only supports Ubuntu Server LTS platforms:
 
 | Name                              | Default                      | Description                                                      |
 | :-------------------------------- | :--------------------------- | :--------------------------------------------------------------- |
-| `k0s_version`                     | `1.28.2+k0s.0`               | Defines the version of the k0s to install                        |
+| `k0s_version`                     | `1.28.4+k0s.0`               | Defines the version of the k0s to install                        |
 | `k0s_role`                        | `controller`                 | Defines the cluster node role (valid values: `controller` or `worker`) | 
 | `k0s_install_dir`                 | `/usr/local/bin`             | Defines the k0s binary installation directory                    |
 | `k0s_data_dir`                    | `/var/lib/k0s`               | Defines the k0s data directory (state, etcd...)                  |
@@ -106,7 +106,7 @@ k0s_worker_profile: mycustomprofile
     - name: k0s
       src: https://github.com/f-bn/ansible-role-k0s.git
       scm: git
-      version: '1.0.0'
+      version: '1.1.0'
 
   $ ansible-galaxy install-f -r requirements.yml
   ```
